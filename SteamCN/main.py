@@ -17,4 +17,3 @@ if __name__=='__main__':
 #     print('\n\n\nDone for: '+str(count))
 #     join_data()
     data=load('Data/final_data.txt')
-    a="b"
