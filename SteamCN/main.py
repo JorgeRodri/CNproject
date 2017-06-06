@@ -3,7 +3,7 @@ Created on 22 may. 2017
 
 @author: Ricard and Jorge
 '''
-from functions.Utils import save, load, join_data
+from functions.Utils import save, load, join_data, inverse_data
 from functions.generators import download_games
 
 if __name__=='__main__':
@@ -17,3 +17,4 @@ if __name__=='__main__':
 #     print('\n\n\nDone for: '+str(count))
 #     join_data()
     data=load('Data/final_data.txt')
+    inverse_data()
