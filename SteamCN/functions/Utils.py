@@ -18,6 +18,8 @@ It defines classes_and_methods
 '''
 import pickle
 import networkx as nx
+from os import listdir, remove
+from os.path import isfile, join
 
 def clean_graph(G, degree=1, method='Size', reached=None):
     H=G.copy()
@@ -54,4 +56,18 @@ def load(name):
         except:
             raise('Wrong file')
     return G
+
+def join_data():
+    namefiles = [f for f in listdir('Data/') if isfile(join('Data/', f))]
+    
+    j_data = []
+    for name in namefiles:
+        if "data" in name:
+            data=load('Data/'+name)
+            for d in data:
+                if d not in j_data:
+                    j_data.append(d)
+            remove(join('Data/', name))
+    save(j_data, 'Data/final_data.txt')
+                    
     
