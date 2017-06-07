@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/experiments2/local/bin/python2.7
 # encoding: utf-8
 '''
 Created on 22 may. 2017

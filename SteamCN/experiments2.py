@@ -2,6 +2,7 @@
 import networkx as nx
 # import community
 from functions.Utils import clean_graph, load, save
+from functions.API import get_game_name, get_user_info
 import numpy as np
 import matplotlib.pyplot as plt
 import community
@@ -22,6 +23,7 @@ def community_game_recomender(data, part):
     recomendationFree = {}
     recomendationPay = {}
     for c in user_community:
+        usr = users[user_community.index(c)]
         free_games = {}
         payment_games = {}
         community = [user for user in part if part[user] == c]      # user name of all user in the community
@@ -43,33 +45,57 @@ def community_game_recomender(data, part):
         sorted_pgame = sorted(payment_games, key=payment_games.get, reverse=True)
         
         try:
-            cleared_fgames =[game for game in sorted_fgame if game not in data[users[user_community.index(c)]+"\r"][1]]
-            cleared_pgames =[game for game in sorted_pgame if game not in data[users[user_community.index(c)]+"\r"][2]]
+            cleared_fgames =[game for game in sorted_fgame if game not in data[usr+"\r"][1]]
+            cleared_pgames =[game for game in sorted_pgame if game not in data[usr+"\r"][2]]
             
-            recomendationFree[users[user_community.index(c)]] = cleared_fgames[:5]
-            recomendationPay[users[user_community.index(c)]] = cleared_pgames[:5]
+            recomendationFree[usr] = cleared_fgames[:5]
+            recomendationPay[usr] = cleared_pgames[:5]
                 
         except KeyError:
-            recomendationFree[users[user_community.index(c)]] = sorted_fgame[:5]
-            recomendationPay[users[user_community.index(c)]] = sorted_pgame[:5]
-            
+            recomendationFree[usr] = sorted_fgame[:5]
+            recomendationPay[usr] = sorted_pgame[:5]
+    '''
+    steam_id = '76561198067384609L'
+    key = '2A526C7C2F3CEB0307B864A8DD15D320'     
+    for rf in recomendationFree:
+        recomendationFree[rf] = get_game_name(steam_id, key)[recomendationFree[rf]]
+    for rf in recomendationPay:
+        recomendationPay[rf] = get_game_name(steam_id, key)[recomendationPay[rf]]
+    '''        
     return recomendationFree, recomendationPay
 
 def distance_recomender(data, part):
     
     key = [k for k in part]
     key_data = [k for k in data]
-     
-    index = random.sample(range(0, len(part)), 5)
+    find = False
+    while (not find):
+        index = random.sample(range(0, len(part)), 5)
+        users = [key[i]+"\r" for i in index]
+        if set(users) <= set(key_data):
+            find = True
+            
     users = [key[i] for i in index]
     user_community = [part[u] for u in users]
-     
+    
+    recomendationFriend = {}
+    recomendationFree   = {}
+    recomendationPay    = {}
+    
     for c in user_community:
+        usr = users[user_community.index(c)]
+        neighbour = {}
         community = [user for user in part if part[user] == c]      # user name of all user in the community
         for user in community:
             if user+"\r" in key_data:
-                for fgame in data[user+"\r"][1]:
-                    a = 'b' 
+                free_common = sum(1 for fgame in data[user+"\r"][1] if fgame in data[usr+"\r"][1])
+                pay_common  = sum(1 for fgame in data[user+"\r"][2] if fgame in data[usr+"\r"][2])
+                
+                neighbour[user] = (free_common+pay_common)/(len(data[usr+"\r"][1])+len(data[usr+"\r"][2]))
+                
+        sorted_nb = sorted(neighbour, key=neighbour.get, reverse=False)
+        
+        recomendationFriend[usr] = sorted_nb[:5]
 
 def histogram(G, log=False, norm=False,cumu=0, n=10):
     degrees=G.degree().values()
@@ -110,13 +136,15 @@ part = community.best_partition(H)
 values = [part.get(node) for node in H.nodes()]
 
 recomendationFree, recomendationPay = community_game_recomender(data, part)
+steam_id = '76561198067384609L'
+key = '2A526C7C2F3CEB0307B864A8DD15D320'
 print '\n'
 for r in recomendationFree:
+    # print 'user:',get_user_info(steam_id, key)[r]
     print 'user:',r
     print '\t Free games:',recomendationFree[r]
     print '\t Payment games:',recomendationPay[r]
 
-  
         
     
 

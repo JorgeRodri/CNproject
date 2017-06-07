@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/experiments2/local/bin/python2.7
 # encoding: utf-8
 '''
 functions.API -- shortdesc
@@ -47,3 +47,10 @@ def get_game_name(app_id, key):
     string = r.read().decode('utf-8')
     name = json.loads(string)["game"]["gameName"]
     return name
+
+def get_user_info(steam_id, key):
+    request = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={key}&steamids={steamid}'
+    r = urllib2.urlopen(request.format(key=key,steamid=steam_id))
+    string = r.read().decode('utf-8')
+    info = json.loads(string)['response']['players'][0]
+    return info
