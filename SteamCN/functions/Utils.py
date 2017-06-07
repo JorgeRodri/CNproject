@@ -93,7 +93,12 @@ def add_game(inverse, game, d):
         inverse[game][2].append(d[0]) 
     return inverse
 
-        
+def transform_into_dict():
+    data=load('Data/final_data.txt')
+    dict = {}
+    for d in data:
+        dict[d[0]] = [d[1],d[2],d[3]]
+    save(dict, 'Data/dict_data.txt')   
     
                     
     
