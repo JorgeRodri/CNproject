@@ -7,24 +7,24 @@ import matplotlib.pyplot as plt
 import community
 import random
 import operator
+from sqlalchemy.sql.expression import false
 
 def community_game_recomender(data, part):
     
     # Get random user's name
     key = [k for k in part]
     key_data = [k for k in data]
-    
     index = random.sample(range(0, len(part)), 5)
     users = [key[i] for i in index]
     user_community = [part[u] for u in users]
     
-    free_games = {}
-    payment_games = {}
+    
     recomendationFree = {}
     recomendationPay = {}
     for c in user_community:
+        free_games = {}
+        payment_games = {}
         community = [user for user in part if part[user] == c]      # user name of all user in the community
-        
         for user in community:
             if user+"\r" in key_data:
                 for fgame in data[user+"\r"][1]:
@@ -39,11 +39,52 @@ def community_game_recomender(data, part):
                     else:
                         payment_games[pgame] = payment_games[pgame] + 1
             
-#         sorted_fgame = sorted(free_games, key=free_games.get, reverse=True)
-#         sorted_pgame = sorted(payment_games, key=payment_games.get, reverse=True)
-        recomendationFree[users[user_community.index(c)]] = sorted(free_games, key=free_games.get, reverse=True)[:5]
-        recomendationPay[users[user_community.index(c)]] = sorted(payment_games, key=payment_games.get, reverse=True)[:5]
+        sorted_fgame = sorted(free_games, key=free_games.get, reverse=True)
+        sorted_pgame = sorted(payment_games, key=payment_games.get, reverse=True)
+        
+        try:
+            cleared_fgames =[game for game in sorted_fgame if game not in data[users[user_community.index(c)]+"\r"][1]]
+            cleared_pgames =[game for game in sorted_pgame if game not in data[users[user_community.index(c)]+"\r"][2]]
+            
+            if len(cleared_fgames)>=5:
+                recomendationFree[users[user_community.index(c)]] = cleared_fgames[:5]
+            else:
+                recomendationFree[users[user_community.index(c)]] = cleared_fgames
+                
+            if len(cleared_pgames)>=5:
+                recomendationPay[users[user_community.index(c)]] = cleared_pgames[:5]
+            else:   
+                recomendationPay[users[user_community.index(c)]] = cleared_pgames
+                
+        except KeyError:
+            
+            if len(sorted_fgame)>=5:
+                recomendationFree[users[user_community.index(c)]] = sorted_fgame[:5]
+            else:
+                recomendationFree[users[user_community.index(c)]] = sorted_fgame
+                 
+            if len(sorted_pgame)>=5:
+                recomendationPay[users[user_community.index(c)]] = sorted_pgame[:5]
+            else:   
+                recomendationPay[users[user_community.index(c)]] = sorted_pgame
     return recomendationFree, recomendationPay
+
+# def distance_game_recomender(data, part):
+#     
+#      Get random user's name
+#     key = [k for k in part]
+#     key_data = [k for k in data]
+#     
+#     index = random.sample(range(0, len(part)), 5)
+#     users = [key[i] for i in index]
+#     user_community = [part[u] for u in users]
+#     
+#     for c in user_community:
+#         community = [user for user in part if part[user] == c]      # user name of all user in the community
+#         for user in community:
+#             if user+"\r" in key_data:
+#                 for fgame in data[user+"\r"][1]:
+#                     
 
 def histogram(G, log=False, norm=False,cumu=0, n=10):
     degrees=G.degree().values()
