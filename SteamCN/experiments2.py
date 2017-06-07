@@ -88,20 +88,23 @@ def distance_recomender(data, part):
             if user+"\r" in key_data:
                 free_common = sum(1 for fgame in data[user+"\r"][1] if fgame in data[usr+"\r"][1])
                 pay_common  = sum(1 for fgame in data[user+"\r"][2] if fgame in data[usr+"\r"][2])
-                neighbour[user] = (free_common+pay_common)/(len(data[usr+"\r"][1])+len(data[usr+"\r"][2]))
-                
+                try:
+                    neighbour[user] = (free_common+pay_common)/(len(data[usr+"\r"][1])+len(data[usr+"\r"][2]))
+                except ZeroDivisionError:
+                    neighbour[user] = (free_common+pay_common)/(len(data[user+"\r"][1])+len(data[user+"\r"][2])+1)
+                    
         sorted_nb = sorted(neighbour, key=neighbour.get, reverse=False)
-        recomendationFriend[usr] = sorted_nb[:5]
+#         recomendationFriend[usr] = sorted_nb[:10]
         
         free_games = {}
         payment_games = {}
-        for nb in recomendationFriend:
-            for fgame in data[user+"\r"][1]:
+        for nb in sorted_nb[:10]:
+            for fgame in data[nb+"\r"][1]:
                 if fgame not in free_games:
                     free_games[fgame] = 1
                 else:
                     free_games[fgame] = free_games[fgame] + 1
-            for pgame in data[user+"\r"][2]:
+            for pgame in data[nb+"\r"][2]:
                 if pgame not in payment_games:
                     payment_games[pgame] = 1
                 else:
@@ -114,9 +117,11 @@ def distance_recomender(data, part):
             cleared_pgames =[game for game in sorted_pgame if game not in data[usr+"\r"][2]]
             recomendationFree[usr] = cleared_fgames[:5]
             recomendationPay[usr] = cleared_pgames[:5]
+            recomendationFriend[usr] = sorted_nb[:5]
         except KeyError:
             recomendationFree[usr] = sorted_fgame[:5]
             recomendationPay[usr] = sorted_pgame[:5]
+            recomendationFriend[usr] = sorted_nb[:5]
     '''
     steam_id = '76561198067384609L'
     key = '2A526C7C2F3CEB0307B864A8DD15D320'     
