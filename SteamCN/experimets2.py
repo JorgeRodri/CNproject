@@ -46,45 +46,30 @@ def community_game_recomender(data, part):
             cleared_fgames =[game for game in sorted_fgame if game not in data[users[user_community.index(c)]+"\r"][1]]
             cleared_pgames =[game for game in sorted_pgame if game not in data[users[user_community.index(c)]+"\r"][2]]
             
-            if len(cleared_fgames)>=5:
-                recomendationFree[users[user_community.index(c)]] = cleared_fgames[:5]
-            else:
-                recomendationFree[users[user_community.index(c)]] = cleared_fgames
-                
-            if len(cleared_pgames)>=5:
-                recomendationPay[users[user_community.index(c)]] = cleared_pgames[:5]
-            else:   
-                recomendationPay[users[user_community.index(c)]] = cleared_pgames
+            recomendationFree[users[user_community.index(c)]] = cleared_fgames[:5]
+            recomendationPay[users[user_community.index(c)]] = cleared_pgames[:5]
                 
         except KeyError:
+            recomendationFree[users[user_community.index(c)]] = sorted_fgame[:5]
+            recomendationPay[users[user_community.index(c)]] = sorted_pgame[:5]
             
-            if len(sorted_fgame)>=5:
-                recomendationFree[users[user_community.index(c)]] = sorted_fgame[:5]
-            else:
-                recomendationFree[users[user_community.index(c)]] = sorted_fgame
-                 
-            if len(sorted_pgame)>=5:
-                recomendationPay[users[user_community.index(c)]] = sorted_pgame[:5]
-            else:   
-                recomendationPay[users[user_community.index(c)]] = sorted_pgame
     return recomendationFree, recomendationPay
 
-# def distance_game_recomender(data, part):
-#     
-#      Get random user's name
-#     key = [k for k in part]
-#     key_data = [k for k in data]
-#     
-#     index = random.sample(range(0, len(part)), 5)
-#     users = [key[i] for i in index]
-#     user_community = [part[u] for u in users]
-#     
-#     for c in user_community:
-#         community = [user for user in part if part[user] == c]      # user name of all user in the community
-#         for user in community:
-#             if user+"\r" in key_data:
-#                 for fgame in data[user+"\r"][1]:
-#                     
+def distance_recomender(data, part):
+    
+    key = [k for k in part]
+    key_data = [k for k in data]
+     
+    index = random.sample(range(0, len(part)), 5)
+    users = [key[i] for i in index]
+    user_community = [part[u] for u in users]
+     
+    for c in user_community:
+        community = [user for user in part if part[user] == c]      # user name of all user in the community
+        for user in community:
+            if user+"\r" in key_data:
+                for fgame in data[user+"\r"][1]:
+                    a = 'b' 
 
 def histogram(G, log=False, norm=False,cumu=0, n=10):
     degrees=G.degree().values()
