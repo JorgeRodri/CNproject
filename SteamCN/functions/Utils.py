@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/experiments2/bin/env python
 # encoding: utf-8
 '''
 functions.Utils -- shortdesc
@@ -20,6 +20,7 @@ import pickle
 import networkx as nx
 from os import listdir, remove
 from os.path import isfile, join
+import numpy as np
 
 def clean_graph(G, degree=1, method='Size', reached=None):
     H=G.copy()
@@ -67,7 +68,37 @@ def join_data():
             for d in data:
                 if d not in j_data:
                     j_data.append(d)
-            remove(join('Data/', name))
+            #remove(join('Data/', name))
     save(j_data, 'Data/final_data.txt')
+    
+def inverse_data():
+    inverse = {}
+    data=load('Data/final_data.txt')
+    for d in data:
+        for game in d[2]:
+            inverse = add_game(inverse, game, d)
+        for game in d[3]:
+            inverse = add_game(inverse, game, d)
+            
+    save(inverse, 'Data/inverse_data.txt')       
+                
+def add_game(inverse, game, d):  
+    if game not in inverse:
+        inverse[game] = [0, 1, [d[0]]]
+#       inverse.append([game, 0, 1, [d[0]]])
+#       visited.append(game)
+    else:
+#       i = inverse[:][0].index(game)
+        inverse[game][1] = inverse[game][1] + 1
+        inverse[game][2].append(d[0]) 
+    return inverse
+
+def transform_into_dict():
+    data=load('Data/final_data.txt')
+    dict = {}
+    for d in data:
+        dict[d[0]] = [d[1],d[2],d[3]]
+    save(dict, 'Data/dict_data.txt')   
+    
                     
     
