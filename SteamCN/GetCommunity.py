@@ -24,7 +24,6 @@ if __name__=='__main__':
     #inverse_data()
     #transform_into_dict()
     data=load('Data/dict_data.txt')
-    print len(data.keys())
     games_data=load('Data/inverse_data.txt')
     
     print('Load of files done. Calculating communities.')

@@ -45,7 +45,11 @@ def get_game_name(app_id, key):
     request = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key={key}&appid={appid}'
     r = urllib2.urlopen(request.format(key=key,appid=app_id))
     string = r.read().decode('utf-8')
-    name = json.loads(string)["game"]["gameName"]
+    try:
+        name = json.loads(string)["game"]["gameName"]
+    except KeyError:
+        name=app_id
+        print('The server returned invalid data, name='+str(app_id))
     return name
 
 def get_user_info(steam_id, key):
