@@ -47,12 +47,12 @@ def community_game_recomender(data, part):
             cleared_fgames =[game for game in sorted_fgame if game not in data[usr][1]]
             cleared_pgames =[game for game in sorted_pgame if game not in data[usr][2]]
             
-            recomendationFree[usr] = [get_game_name(game, key) for game in cleared_fgames[:5]]
-            recomendationPay[usr] = [get_game_name(game, key) for game in cleared_pgames[:5]]
+            recomendationFree[usr] = cleared_fgames[:5]
+            recomendationPay[usr] = cleared_pgames[:5]
                 
         except KeyError:
-            recomendationFree[usr] = [get_game_name(game, key) for game in sorted_fgame[:5]]
-            recomendationPay[usr] = [get_game_name(game, key) for game in sorted_pgame[:5]]
+            recomendationFree[usr] = sorted_fgame[:5]
+            recomendationPay[usr] = sorted_pgame[:5]
 
     
     '''     
@@ -118,14 +118,14 @@ def distance_recomender(G, data, part):
             cleared_pgames = [game for game in sorted_pgame if game not in data[usr][2]]
             cleared_nb     = [nb for nb in sorted_nb if nb not in G.edge[usr]]
             
-            recomendationFree[usr] = [get_game_name(game, key) for game in cleared_fgames[:5]]
-            recomendationPay[usr] = [get_game_name(game, key) for game in cleared_pgames[:5]]
-            recomendationPay[usr] = [get_user_info(nb, key)['personaname'] for nb in cleared_nb[:5]]
+            recomendationFree[usr] = cleared_fgames[:5]
+            recomendationPay[usr]  = cleared_pgames[:5]
+            recomendationFriend[usr]  = cleared_nb[:5]
                 
         except KeyError:
-            recomendationFree[usr] = [get_game_name(game, key) for game in sorted_fgame[:5]]
-            recomendationPay[usr] = [get_game_name(game, key) for game in sorted_pgame[:5]]
-            recomendationPay[usr] = [get_user_info(nb, key)['personaname'] for nb in sorted_nb[:5]]
+            recomendationFree[usr] = sorted_fgame[:5]
+            recomendationPay[usr]  = sorted_pgame[:5]
+            recomendationFriend[usr]  = sorted_nb[:5]
     
 
     '''   
@@ -137,9 +137,19 @@ def distance_recomender(G, data, part):
         recomendationFriend[rf] = [get_user_info(f, key)['personaname'] for f in [recomendationFriend[rf]]]
     '''
                     
-    return recomendationFriend,recomendationFree, recomendationPay
+    return recomendationFriend,recomendationFree,recomendationPay
 
+def translate_game_list(list_users,key):
+    new_list = {}
+    for user in list_users:
+            new_list[user]=[get_game_name(game, key) for game in list_users[user]]
+    return new_list
 
+def translate_user_list(list_users,key):
+    new_list = {}
+    for user in list_users:
+            new_list[user]=[get_user_info(u, key)['personaname'] for u in list_users[user]]
+    return new_list
 
 def histogram(G, log=False, norm=False,cumu=0, n=10):
     degrees=G.degree().values()
@@ -179,28 +189,67 @@ degrees = nx.degree(H).values()
 part = community.best_partition(H)
 values = [part.get(node) for node in H.nodes()]
 
-recomendationFree, recomendationPay = community_game_recomender(data, part)
 
 key = '2A526C7C2F3CEB0307B864A8DD15D320'
+recomFree, recomPay = community_game_recomender(data, part)
+
+recomendationFree=translate_game_list(recomFree, key)
+recomendationPay=translate_game_list(recomPay, key)
+
 print '\n Recomendation by communities\n'
 for r in recomendationFree:
     try:
-        print '\t user:',get_user_info(r, key)['personaname']
+        print 'user:',get_user_info(r, key)['personaname']
     except UnicodeEncodeError:
-        print '\t user:',r
-    print '\t\t Free games:',recomendationFree[r]
-    print '\t\t Payment games:',recomendationPay[r]
+        print r
+        
+    print '\t Free games:'
+    for i in range(len(recomendationFree[r])): 
+        if recomendationFree[r][i]!="":
+            print '\t\t',recomendationFree[r][i]
+        else:
+            print '\t\t',recomFree[r][i]
+        
+    print '\t Payment games:'
+    for i in range(len(recomendationPay[r])): 
+        if recomendationPay[r][i]!="":
+            print '\t\t',recomendationPay[r][i]
+        else:
+            print '\t\t',recomPay[r][i]
 
-recomendationFriend,recomendationFree, recomendationPay = distance_recomender(G,data, part)  
+recomFriend,recomFree, recomPay = distance_recomender(G,data, part)  
+
+recomendationFree=translate_game_list(recomFree, key)
+recomendationPay=translate_game_list(recomPay, key)
+recomendationFriend=translate_user_list(recomFriend, key)
+
 print '\n Recomendation by distance\n'
 for r in recomendationFree:
     try:
-        print '\t user:',get_user_info(r, key)['personaname']
+        print 'user:',get_user_info(r, key)['personaname']
     except UnicodeEncodeError:
-        print '\t user:',r
-    print '\t\t Suggested Friends:',recomendationFriend[r]
-    print '\t\t Free games:',recomendationFree[r]
-    print '\t\t Payment games:',recomendationPay[r]    
+        print r
+        
+    print '\tFree games:'
+    for i in range(len(recomendationFree[r])): 
+        if recomendationFree[r][i]!="":
+            print '\t\t',recomendationFree[r][i]
+        else:
+            print '\t\t',recomFree[r][i]
+        
+    print '\t Payment games:'
+    for i in range(len(recomendationPay[r])): 
+        if recomendationPay[r][i]!="":
+            print '\t\t',recomendationPay[r][i]
+        else:
+            print '\t\t',recomPay[r][i]
+        
+    print '\t Payment games:'
+    for i in range(len(recomendationFriend[r])): 
+        try:
+            print '\t\t',recomendationFriend[r][i]
+        except UnicodeEncodeError:
+            print '\t\t',recomFriend[r][i]
     
 
 '''
