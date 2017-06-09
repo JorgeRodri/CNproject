@@ -54,14 +54,15 @@ def community_game_recomender(data, part):
             recomendationFree[usr] = sorted_fgame[:5]
             recomendationPay[usr] = sorted_pgame[:5]
 
-    '''
+    
     steam_id = '76561198067384609L'
     key = '2A526C7C2F3CEB0307B864A8DD15D320'     
     for rf in recomendationFree:
         recomendationFree[rf] = get_game_name(steam_id, key)[recomendationFree[rf]]
     for rf in recomendationPay:
         recomendationPay[rf] = get_game_name(steam_id, key)[recomendationPay[rf]]
-    '''      
+   
+          
     return recomendationFree, recomendationPay
 
 def distance_recomender(G, data, part):
@@ -123,14 +124,16 @@ def distance_recomender(G, data, part):
             recomendationFree[usr] = sorted_fgame[:5]
             recomendationPay[usr] = sorted_pgame[:5]
             recomendationFriend[usr] = sorted_nb[:5]
-    '''
+    
     steam_id = '76561198067384609L'
     key = '2A526C7C2F3CEB0307B864A8DD15D320'     
     for rf in recomendationFree:
         recomendationFree[rf] = get_game_name(steam_id, key)[recomendationFree[rf]]
     for rf in recomendationPay:
         recomendationPay[rf] = get_game_name(steam_id, key)[recomendationPay[rf]]
-     '''     
+    for rf in recomendationFriend:
+        recomendationFriend[rf] = get_game_name(steam_id, key)[recomendationFriend[rf]]
+         
     return recomendationFriend,recomendationFree, recomendationPay
 
 
@@ -178,16 +181,16 @@ steam_id = '76561198067384609L'
 key = '2A526C7C2F3CEB0307B864A8DD15D320'
 print 'Recomendation by communities\n'
 for r in recomendationFree:
-    #print 'user:',get_user_info(steam_id, key)[r]
-    print '\tuser:',r
+    print 'user:',get_user_info(steam_id, key)[r]
+    #print '\tuser:',r
     print '\t\t Free games:',recomendationFree[r]
     print '\t\t Payment games:',recomendationPay[r]
 
 recomendationFriend,recomendationFree, recomendationPay = distance_recomender(G,data, part)  
 print 'Recomendation by distance\n'
 for r in recomendationFree:
-    #print 'user:',get_user_info(steam_id, key)[r]
-    print '\t User:',r
+    print 'user:',get_user_info(steam_id, key)[r]
+    #print '\t User:',r
     print '\t\t Suggested Friends:',recomendationFriend[r]
     print '\t\t Free games:',recomendationFree[r]
     print '\t\t Payment games:',recomendationPay[r]    
