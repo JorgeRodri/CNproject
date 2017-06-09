@@ -44,7 +44,7 @@ def save(data, name):
     try:
         nx.write_pajek(data,name)
     except:
-        with open(name, 'wb') as f:
+        with open(name, 'w') as f:
             pickle.dump(data, f)
 
 def load(name):
@@ -52,7 +52,7 @@ def load(name):
         G=nx.read_pajek(name)
     else:
         try: 
-            with open(name, 'rb') as f:
+            with open(name, 'r') as f:
                 G = pickle.load(f)
         except:
             raise('Wrong file')
@@ -63,7 +63,7 @@ def join_data():
     
     j_data = []
     for name in namefiles:
-        if "data" in name:
+        if "data" in name and '_' not in name:
             data=load('Data/'+name)
             for d in data:
                 if d not in j_data:
