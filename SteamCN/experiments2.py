@@ -27,14 +27,14 @@ def community_game_recomender(data, part):
         payment_games = {}
         community = [user for user in part if part[user] == c]      # user name of all user in the community
         for user in community:
-            if user+"\r" in key_data:
-                for fgame in data[user+"\r"][1]:
+            if user in key_data:
+                for fgame in data[user][1]:
                     if fgame not in free_games:
                         free_games[fgame] = 1
                     else:
                         free_games[fgame] = free_games[fgame] + 1
                         
-                for pgame in data[user+"\r"][2]:
+                for pgame in data[user][2]:
                     if pgame not in payment_games:
                         payment_games[pgame] = 1
                     else:
@@ -44,8 +44,8 @@ def community_game_recomender(data, part):
         sorted_pgame = sorted(payment_games, key=payment_games.get, reverse=True)
         
         try:
-            cleared_fgames =[game for game in sorted_fgame if game not in data[usr+"\r"][1]]
-            cleared_pgames =[game for game in sorted_pgame if game not in data[usr+"\r"][2]]
+            cleared_fgames =[game for game in sorted_fgame if game not in data[usr][1]]
+            cleared_pgames =[game for game in sorted_pgame if game not in data[usr][2]]
             
             recomendationFree[usr] = cleared_fgames[:5]
             recomendationPay[usr] = cleared_pgames[:5]
@@ -70,7 +70,7 @@ def distance_recomender(data, part):
     find = False
     while (not find):
         index = random.sample(range(0, len(part)), 5)
-        users = [key[i]+"\r" for i in index]
+        users = [key[i] for i in index]
         if set(users) <= set(key_data):
             find = True          
     users = [key[i] for i in index]
@@ -85,13 +85,13 @@ def distance_recomender(data, part):
         neighbour = {}
         community = [user for user in part if part[user] == c]      # user name of all user in the community
         for user in community:
-            if user+"\r" in key_data:
-                free_common = sum(1 for fgame in data[user+"\r"][1] if fgame in data[usr+"\r"][1])
-                pay_common  = sum(1 for fgame in data[user+"\r"][2] if fgame in data[usr+"\r"][2])
+            if user in key_data:
+                free_common = sum(1 for fgame in data[user][1] if fgame in data[usr][1])
+                pay_common  = sum(1 for fgame in data[user][2] if fgame in data[usr][2])
                 try:
-                    neighbour[user] = (free_common+pay_common)/(len(data[usr+"\r"][1])+len(data[usr+"\r"][2]))
+                    neighbour[user] = (free_common+pay_common)/(len(data[usr][1])+len(data[usr][2]))
                 except ZeroDivisionError:
-                    neighbour[user] = (free_common+pay_common)/(len(data[user+"\r"][1])+len(data[user+"\r"][2])+1)
+                    neighbour[user] = (free_common+pay_common)/(len(data[user][1])+len(data[user][2])+1)
                     
         sorted_nb = sorted(neighbour, key=neighbour.get, reverse=False)
 #         recomendationFriend[usr] = sorted_nb[:10]
@@ -99,12 +99,12 @@ def distance_recomender(data, part):
         free_games = {}
         payment_games = {}
         for nb in sorted_nb[:10]:
-            for fgame in data[nb+"\r"][1]:
+            for fgame in data[nb][1]:
                 if fgame not in free_games:
                     free_games[fgame] = 1
                 else:
                     free_games[fgame] = free_games[fgame] + 1
-            for pgame in data[nb+"\r"][2]:
+            for pgame in data[nb][2]:
                 if pgame not in payment_games:
                     payment_games[pgame] = 1
                 else:
@@ -113,8 +113,8 @@ def distance_recomender(data, part):
         sorted_fgame = sorted(free_games, key=free_games.get, reverse=True)
         sorted_pgame = sorted(payment_games, key=payment_games.get, reverse=True)
         try:
-            cleared_fgames =[game for game in sorted_fgame if game not in data[usr+"\r"][1]]
-            cleared_pgames =[game for game in sorted_pgame if game not in data[usr+"\r"][2]]
+            cleared_fgames =[game for game in sorted_fgame if game not in data[usr][1]]
+            cleared_pgames =[game for game in sorted_pgame if game not in data[usr][2]]
             recomendationFree[usr] = cleared_fgames[:5]
             recomendationPay[usr] = cleared_pgames[:5]
             recomendationFriend[usr] = sorted_nb[:5]
