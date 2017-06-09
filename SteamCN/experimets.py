@@ -1,6 +1,6 @@
 
 
-from functions.Utils import load, save
+from functions.Utils import load, save, inverse_data
 from functions.API import get_user_info, get_game_name
 
 
@@ -10,6 +10,7 @@ with open('claveSteam.txt', 'rb') as f: # Get at http://steamcommunity.com/dev/r
 #G=nx.Graph(load('Networks/final_cleared.net'))
 Com_dict=load('Data/Community_dict.txt')
 #data=load('Data/dict_data.txt')
+inverse_data()
 games_data=load('Data/inverse_data.txt')
     
 print('Files loaded.')

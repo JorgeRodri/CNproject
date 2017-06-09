@@ -76,15 +76,15 @@ def inverse_data():
     data=load('Data/final_data.txt')
     for d in data:
         for game in d[2]:
-            inverse = add_game(inverse, game, d)
+            inverse = add_game(inverse, game, d, 0)
         for game in d[3]:
-            inverse = add_game(inverse, game, d)
+            inverse = add_game(inverse, game, d, 1)
             
     save(inverse, 'Data/inverse_data.txt')       
                 
-def add_game(inverse, game, d):  
+def add_game(inverse, game, d, f2p):  
     if game not in inverse:
-        inverse[game] = [0, 1, [d[0]]]
+        inverse[game] = [f2p, 1, [d[0]]]
 #       inverse.append([game, 0, 1, [d[0]]])
 #       visited.append(game)
     else:
