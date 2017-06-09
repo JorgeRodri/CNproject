@@ -21,8 +21,8 @@ def community_game_recomender(data, part):
     
     recomendationFree = {}
     recomendationPay = {}
-    for c in user_community:
-        usr = users[user_community.index(c)]
+    for usr in users:
+        c = user_community[users.index(usr)]
         free_games = {}
         payment_games = {}
         community = [user for user in part if part[user] == c]      # user name of all user in the community
@@ -80,8 +80,9 @@ def distance_recomender(data, part):
     recomendationFree   = {}
     recomendationPay    = {}
     
-    for c in user_community:
-        usr = users[user_community.index(c)]
+    for usr in users:
+        c = user_community[users.index(usr)]
+        
         neighbour = {}
         community = [user for user in part if part[user] == c]      # user name of all user in the community
         for user in community:
