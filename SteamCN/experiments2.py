@@ -42,26 +42,29 @@ def community_game_recomender(data, part):
             
         sorted_fgame = sorted(free_games, key=free_games.get, reverse=True)
         sorted_pgame = sorted(payment_games, key=payment_games.get, reverse=True)
-        
+        key = '2A526C7C2F3CEB0307B864A8DD15D320'
         try:
             cleared_fgames =[game for game in sorted_fgame if game not in data[usr][1]]
             cleared_pgames =[game for game in sorted_pgame if game not in data[usr][2]]
             
-            recomendationFree[usr] = cleared_fgames[:5]
-            recomendationPay[usr] = cleared_pgames[:5]
+            for game in cleared_fgames[:5]:
+                recomendationFree[usr] = get_game_name(game, key)
+            for game in cleared_pgames[:5]:
+                recomendationPay[usr] = get_game_name(game, key)
                 
         except KeyError:
-            recomendationFree[usr] = sorted_fgame[:5]
-            recomendationPay[usr] = sorted_pgame[:5]
+            for game in sorted_fgame[:5]:
+                recomendationFree[usr] = get_game_name(game, key)
+            for game in sorted_pgame[:5]:
+                recomendationPay[usr] = get_game_name(game, key)
 
     
-    steam_id = '76561198067384609L'
-    key = '2A526C7C2F3CEB0307B864A8DD15D320'     
+    '''     
     for rf in recomendationFree:
-        recomendationFree[rf] = [get_game_name(steam_id, key)[game] for game in [recomendationFree[rf]]]
+        recomendationFree[rf] = [get_game_name(g, key) for g in [recomendationFree[rf]]]
     for rf in recomendationPay:
-        recomendationPay[rf] = [get_game_name(steam_id, key)[game] for game in [recomendationPay[rf]]]
-   
+        recomendationPay[rf] = [get_game_name(game, key) for game in [recomendationPay[rf]]]
+   '''
           
     return recomendationFree, recomendationPay
 
@@ -113,27 +116,36 @@ def distance_recomender(G, data, part):
         
         sorted_fgame = sorted(free_games, key=free_games.get, reverse=True)
         sorted_pgame = sorted(payment_games, key=payment_games.get, reverse=True)
+        key = '2A526C7C2F3CEB0307B864A8DD15D320' 
         try:
             cleared_fgames = [game for game in sorted_fgame if game not in data[usr][1]]
             cleared_pgames = [game for game in sorted_pgame if game not in data[usr][2]]
             cleared_nb     = [nb for nb in sorted_nb if nb not in G.edge[usr]]
-            recomendationFree[usr] = cleared_fgames[:5]
-            recomendationPay[usr] = cleared_pgames[:5]
-            recomendationFriend[usr] = cleared_nb[:5]
+            for game in cleared_fgames[:5]:
+                recomendationFree[usr] = get_game_name(game, key)
+            for game in cleared_pgames[:5]:
+                recomendationPay[usr] = get_game_name(game, key)
+            for nb in cleared_nb[:5]:
+                recomendationPay[usr] = get_user_info(nb, key)['personaname']
+                
         except KeyError:
-            recomendationFree[usr] = sorted_fgame[:5]
-            recomendationPay[usr] = sorted_pgame[:5]
-            recomendationFriend[usr] = sorted_nb[:5]
+            for game in sorted_fgame[:5]:
+                recomendationFree[usr] = get_game_name(game, key)
+            for game in sorted_pgame[:5]:
+                recomendationPay[usr] = get_game_name(game, key)
+            for nb in sorted_nb[:5]:
+                recomendationPay[usr] = get_user_info(nb, key)['personaname']
     
-    steam_id = '76561198067384609L'
-    key = '2A526C7C2F3CEB0307B864A8DD15D320'     
+
+    '''   
     for rf in recomendationFree:
-        recomendationFree[rf] = [get_game_name(steam_id, key)[game] for game in [recomendationFree[rf]]]
+        recomendationFree[rf] = [get_game_name(game, key) for game in [recomendationFree[rf]]]
     for rf in recomendationPay:
-        recomendationPay[rf] = [get_game_name(steam_id, key)[game] for game in [recomendationPay[rf]]]
+        recomendationPay[rf] = [get_game_name(game, key) for game in [recomendationPay[rf]]]
     for rf in recomendationFriend:
-        recomendationFriend[rf] = [get_user_info(steam_id, key)[f] for f in [recomendationFriend[rf]]]
-         
+        recomendationFriend[rf] = [get_user_info(f, key)['personaname'] for f in [recomendationFriend[rf]]]
+    '''
+                    
     return recomendationFriend,recomendationFree, recomendationPay
 
 
@@ -177,11 +189,11 @@ part = community.best_partition(H)
 values = [part.get(node) for node in H.nodes()]
 
 recomendationFree, recomendationPay = community_game_recomender(data, part)
-steam_id = '76561198067384609L'
+
 key = '2A526C7C2F3CEB0307B864A8DD15D320'
 print 'Recomendation by communities\n'
 for r in recomendationFree:
-    print 'user:',get_user_info(steam_id, key)[r]
+    print 'user:',get_user_info(r, key)['personaname']
     #print '\tuser:',r
     print '\t\t Free games:',recomendationFree[r]
     print '\t\t Payment games:',recomendationPay[r]
@@ -189,7 +201,7 @@ for r in recomendationFree:
 recomendationFriend,recomendationFree, recomendationPay = distance_recomender(G,data, part)  
 print 'Recomendation by distance\n'
 for r in recomendationFree:
-    print 'user:',get_user_info(steam_id, key)[r]
+    print 'user:',get_user_info(r, key)['personaname']
     #print '\t User:',r
     print '\t\t Suggested Friends:',recomendationFriend[r]
     print '\t\t Free games:',recomendationFree[r]
