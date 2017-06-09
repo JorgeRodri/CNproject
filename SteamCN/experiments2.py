@@ -64,7 +64,7 @@ def community_game_recomender(data, part):
     '''      
     return recomendationFree, recomendationPay
 
-def distance_recomender(data, part):
+def distance_recomender(G, data, part):
     key = [k for k in part]
     key_data = [k for k in data]
     find = False
@@ -95,7 +95,6 @@ def distance_recomender(data, part):
                     neighbour[user] = (free_common+pay_common)/(len(data[user][1])+len(data[user][2])+1)
                     
         sorted_nb = sorted(neighbour, key=neighbour.get, reverse=False)
-#         recomendationFriend[usr] = sorted_nb[:10]
         
         free_games = {}
         payment_games = {}
@@ -114,11 +113,12 @@ def distance_recomender(data, part):
         sorted_fgame = sorted(free_games, key=free_games.get, reverse=True)
         sorted_pgame = sorted(payment_games, key=payment_games.get, reverse=True)
         try:
-            cleared_fgames =[game for game in sorted_fgame if game not in data[usr][1]]
-            cleared_pgames =[game for game in sorted_pgame if game not in data[usr][2]]
+            cleared_fgames = [game for game in sorted_fgame if game not in data[usr][1]]
+            cleared_pgames = [game for game in sorted_pgame if game not in data[usr][2]]
+            cleared_nb     = [nb for nb in sorted_nb if nb not in G.edge[usr]]
             recomendationFree[usr] = cleared_fgames[:5]
             recomendationPay[usr] = cleared_pgames[:5]
-            recomendationFriend[usr] = sorted_nb[:5]
+            recomendationFriend[usr] = cleared_nb[:5]
         except KeyError:
             recomendationFree[usr] = sorted_fgame[:5]
             recomendationPay[usr] = sorted_pgame[:5]
@@ -183,7 +183,7 @@ for r in recomendationFree:
     print '\t\t Free games:',recomendationFree[r]
     print '\t\t Payment games:',recomendationPay[r]
 
-recomendationFriend,recomendationFree, recomendationPay = distance_recomender(data, part)  
+recomendationFriend,recomendationFree, recomendationPay = distance_recomender(G,data, part)  
 print 'Recomendation by distance\n'
 for r in recomendationFree:
     #print 'user:',get_user_info(steam_id, key)[r]
