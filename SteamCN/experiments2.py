@@ -58,9 +58,9 @@ def community_game_recomender(data, part):
     steam_id = '76561198067384609L'
     key = '2A526C7C2F3CEB0307B864A8DD15D320'     
     for rf in recomendationFree:
-        recomendationFree[rf] = get_game_name(steam_id, key)[recomendationFree[rf]]
+        recomendationFree[rf] = [get_game_name(steam_id, key)[game] for game in [recomendationFree[rf]]]
     for rf in recomendationPay:
-        recomendationPay[rf] = get_game_name(steam_id, key)[recomendationPay[rf]]
+        recomendationPay[rf] = [get_game_name(steam_id, key)[game] for game in [recomendationPay[rf]]]
    
           
     return recomendationFree, recomendationPay
@@ -128,11 +128,11 @@ def distance_recomender(G, data, part):
     steam_id = '76561198067384609L'
     key = '2A526C7C2F3CEB0307B864A8DD15D320'     
     for rf in recomendationFree:
-        recomendationFree[rf] = get_game_name(steam_id, key)[recomendationFree[rf]]
+        recomendationFree[rf] = [get_game_name(steam_id, key)[game] for game in [recomendationFree[rf]]]
     for rf in recomendationPay:
-        recomendationPay[rf] = get_game_name(steam_id, key)[recomendationPay[rf]]
+        recomendationPay[rf] = [get_game_name(steam_id, key)[game] for game in [recomendationPay[rf]]]
     for rf in recomendationFriend:
-        recomendationFriend[rf] = get_game_name(steam_id, key)[recomendationFriend[rf]]
+        recomendationFriend[rf] = [get_user_info(steam_id, key)[f] for f in [recomendationFriend[rf]]]
          
     return recomendationFriend,recomendationFree, recomendationPay
 
