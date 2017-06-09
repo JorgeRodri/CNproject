@@ -229,6 +229,13 @@ for r in recomendationFree:
         print 'user:',get_user_info(r, key)['personaname']
     except UnicodeEncodeError:
         print r
+    
+    print '\t Suggested Friends:'
+    for i in range(len(recomendationFriend[r])): 
+        try:
+            print '\t\t',recomendationFriend[r][i]
+        except UnicodeEncodeError:
+            print '\t\t',recomFriend[r][i]
         
     print '\tFree games:'
     for i in range(len(recomendationFree[r])): 
@@ -242,15 +249,7 @@ for r in recomendationFree:
         if recomendationPay[r][i]!="":
             print '\t\t',recomendationPay[r][i]
         else:
-            print '\t\t',recomPay[r][i]
-        
-    print '\t Payment games:'
-    for i in range(len(recomendationFriend[r])): 
-        try:
-            print '\t\t',recomendationFriend[r][i]
-        except UnicodeEncodeError:
-            print '\t\t',recomFriend[r][i]
-    
+            print recomPay[r][i]
 
 '''
 f = open('Networks/demo_communities1.clu', 'w')
