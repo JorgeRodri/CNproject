@@ -6,16 +6,53 @@ Created on 22 may. 2017
 from functions.Utils import save, load, join_data, inverse_data, transform_into_dict, clean_graph
 from functions.generators import download_games
 import networkx as nx
+import numpy as np
 import matplotlib.pyplot as plt
 from functions.Centrality import between_parallel
+import time
+import community
+from collections import Counter
+import pickle 
+
+def takeSecond(elem):
+    return elem[1]
+
+def histogram(G, log=False, norm=False,cumu=0, n=10):
+    degrees=G.degree().values()
+    if log:
+        plt.title("Log Histogram.")
+        logbins = np.logspace(np.log10(min(degrees)), np.log10(max(degrees)), n)
+        plt.hist(degrees, bins = logbins, cumulative=cumu, normed=norm)
+        plt.gca().set_xscale('log')
+        plt.gca().set_yscale('log')
+        #plt.show()
+    else:  
+        plt.hist(degrees, n,cumulative=cumu, normed=norm)  # plt.hist passes it's arguments to np.histogram
+        plt.title("Histogram without log.")
+        #plt.show()
+    return plt
+
 
 name_network='demo.net'
 if __name__=='__main__':
     path='Networks/'
     G=load(path+name_network)
     G=nx.Graph(clean_graph(G))
+    data=load('Data/dict_data.txt')
+    games_data=load('Data/inverse_data.txt')
     
+    
+    print 'Data loaded'
+    
+    print 'Most Played Games:'
 
+    x=[(i,games_data[i][1], games_data[i][0]) for i in games_data.keys()]
+    
+    
+    sorted_x = sorted(x, reverse=True, key=takeSecond)
+    
+    print sorted_x[0:13]
+    
     spring_pos = nx.spring_layout(G)
     print 'General information of the graph.'
     
@@ -45,8 +82,6 @@ if __name__=='__main__':
     diameter=nx.diameter(H)
     print('Average path length: '+str(average_path)+ '\nDiameter: '+str(diameter))
             
-    data_results=( numbNodes, numbEdges, np.mean(degrees), max(degrees), min(degrees), np.mean(clustering), assortativity, average_path, diameter)
-    save(data_results, save_path+'str_des.txt')
     
     #partition = community.best_partition(H)
     
@@ -54,24 +89,37 @@ if __name__=='__main__':
     plt1.xlabel('Relative frequencies')
     plt1.ylabel('Degree of the node')
     plt1.title('Histogram in the usual scale')
-    plt1.savefig(save_path+'Hist_nolog'+'.jpg')
     plt1.show()
     
     plt2=histogram(H, log=True, norm=True,cumu=0, n=10)
     plt2.xlabel('Log frequencies')
     plt2.ylabel('Log scale degree')
     plt2.title('Histogram in Log scale')
-    plt2.savefig(save_path+'Hist_Log'+'.jpg')
     plt2.show()
     
     
+    ### community detection by louvain
+    ##### Comumunity detection
     
     
     
+    print('Load of files done. Calculating communities.')
+    t1=time.time()
+    part = community.best_partition(G)
+    t2=time.time()
+    
+    print('Needed time for community detection: '+str(t2-t1))
+    communities=set(part.values())
+    print('number of communities='+str(len(communities)))
+    
+    values = [part.get(node) for node in G.nodes()]
+
+    plt.axis("off")
+    nx.draw_networkx(G, pos = spring_pos, cmap = plt.get_cmap("jet"), node_color = values, node_size = 35, with_labels = False)
+    plt.show()
     
     
-    
-    
+    #game recommending system
     
     
     
