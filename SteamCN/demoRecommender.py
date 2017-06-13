@@ -53,14 +53,6 @@ def community_game_recomender(data, part):
         except KeyError:
             recomendationFree[usr] = sorted_fgame[:5]
             recomendationPay[usr] = sorted_pgame[:5]
-
-    
-    '''     
-    for rf in recomendationFree:
-        recomendationFree[rf] = [get_game_name(g, key) for g in [recomendationFree[rf]]]
-    for rf in recomendationPay:
-        recomendationPay[rf] = [get_game_name(game, key) for game in [recomendationPay[rf]]]
-   '''
           
     return recomendationFree, recomendationPay
 
@@ -126,17 +118,7 @@ def distance_recomender(G, data, part):
             recomendationFree[usr] = sorted_fgame[:5]
             recomendationPay[usr]  = sorted_pgame[:5]
             recomendationFriend[usr]  = sorted_nb[:5]
-    
 
-    '''   
-    for rf in recomendationFree:
-        recomendationFree[rf] = [get_game_name(game, key) for game in [recomendationFree[rf]]]
-    for rf in recomendationPay:
-        recomendationPay[rf] = [get_game_name(game, key) for game in [recomendationPay[rf]]]
-    for rf in recomendationFriend:
-        recomendationFriend[rf] = [get_user_info(f, key)['personaname'] for f in [recomendationFriend[rf]]]
-    '''
-                    
     return recomendationFriend,recomendationFree,recomendationPay
 
 def translate_game_list(list_users,key):
@@ -170,21 +152,8 @@ def histogram(G, log=False, norm=False,cumu=0, n=10):
 G=nx.read_pajek("Networks/final_cleared.net")
 
 data=load('Data/dict_data.txt')
-print(nx.info(G))
 
 H = nx.Graph(G)
-# nx.write_pajek(H, "Networks/demo2clean.net")
-print(nx.info(H))
-
-
-print('\n\ndatabase: ')       
-numbNodes=H.number_of_nodes()
-numbEdges=H.number_of_edges()
-        
-print('Number of nodes: ' + str(numbNodes))
-print('Number of edges: ' + str(numbEdges))
-
-degrees = nx.degree(H).values()
  
 part = community.best_partition(H)
 values = [part.get(node) for node in H.nodes()]
@@ -250,30 +219,3 @@ for r in recomendationFree:
             print '\t\t',recomendationPay[r][i]
         else:
             print recomPay[r][i]
-
-'''
-f = open('Networks/demo_communities1.clu', 'w')
-f.write("*Vertices "+ str(len(values))+"\n")
-for i in values:
-    f.write(str(i+1)+"\n")
-f.close()
-
-values.sort()
-f = open('Networks/demo_communities2.clu', 'w')
-f.write("*Vertices "+ str(len(values))+"\n")
-for i in values:
-    f.write(str(i+1)+"\n")
-f.close()
-'''
-
-
-
-'''
-nx.draw_spring(H,
-                   cmap=plt.get_cmap('jet'),
-                   node_color=values,
-                   node_size=30,
-                   with_labels=False)
-
-plt.show()
-'''

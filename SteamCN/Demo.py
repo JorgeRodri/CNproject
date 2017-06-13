@@ -33,7 +33,8 @@ def histogram(G, log=False, norm=False,cumu=0, n=10):
     return plt
 
 
-name_network='demo.net'
+name_network='demo.net' # there are other 2 networks that can be used: final_uncleared and demo2 but they are larger
+
 if __name__=='__main__':
     path='Networks/'
     G=load(path+name_network)
@@ -117,17 +118,7 @@ if __name__=='__main__':
     plt.axis("off")
     nx.draw_networkx(G, pos = spring_pos, cmap = plt.get_cmap("jet"), node_color = values, node_size = 35, with_labels = False)
     plt.show()
-    
-    
-    #game recommending system
-    
-    
-    
-    
-    
-    
-    
-    
+
     
     ##
     ## CENTRALITY
