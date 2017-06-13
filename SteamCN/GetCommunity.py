@@ -17,6 +17,7 @@ def aux(my_map):
         inv_map[v].append(k)
     return inv_map  
 
+
 if __name__=='__main__':
     
     G=nx.Graph(load('Networks/final_cleared.net'))
@@ -43,14 +44,12 @@ if __name__=='__main__':
     dict_comm={}
     n=0
     for comm in members_in_communities.keys():
-        n+=1
-        print n
-        dict_comm[comm]=[0,[], []]
+        dict_comm[comm]=[[],[], []]
         for user in members_in_communities[comm]:
-            dict_comm[comm]=[dict_comm[comm][0]+data[user][0], dict_comm[comm][1]+data[user][1], dict_comm[comm][2]+data[user][2]]
-        dict_comm[comm]=[dict_comm[comm][0]/len(members_in_communities[comm]),Counter(dict_comm[comm][1]), Counter(dict_comm[comm][2])]
+            dict_comm[comm]=[dict_comm[comm][0]+[data[user][0]], dict_comm[comm][1]+data[user][1], dict_comm[comm][2]+data[user][2]]
+        dict_comm[comm]=[dict_comm[comm][0],Counter(dict_comm[comm][1]), Counter(dict_comm[comm][2])]
     print 'Saving the results'
-    save(dict_comm, 'Data/Community_dict.txt')
+    save(dict_comm, 'Data/Community_dict_lists.txt')
     save(part,'Data/Communities.txt')
     
     
